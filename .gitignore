@@ -1,0 +1,19 @@
+.gradle/
+.kotlin/
+.idea/
+**/build/
+.cxx/
+.externalNativeBuild/
+captures/
+*.iml
+.DS_Store
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# Machine-local linked sources and toolchains.
+brave-core
+libxposed-example
+jdk/
+android-sdk/

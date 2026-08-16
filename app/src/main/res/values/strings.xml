@@ -1,0 +1,4 @@
+<resources>
+    <string name="module_name">BravePrune</string>
+    <string name="module_description">Runtime privacy and preference enhancements for Brave Android.</string>
+</resources>
