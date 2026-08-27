@@ -1,5 +1,7 @@
 # BravePrune
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 [English](README.md) | 简体中文
 
 本模块用于对 Brave 浏览器进行隐私强化与精简。
@@ -70,3 +72,7 @@
 
 - [LibXposed API](https://libxposed.github.io/api/)
 - [使用现代 Xposed API 开发模块](https://github.com/LSPosed/LSPosed/wiki/Develop-Xposed-Modules-Using-Modern-Xposed-API)
+
+## 许可证
+
+本项目基于 [GNU General Public License v3.0](LICENSE) 发布。

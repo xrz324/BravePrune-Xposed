@@ -1,5 +1,7 @@
 # BravePrune
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 English | [简体中文](README.zh-CN.md)
 
 This module provides privacy hardening and feature pruning for Brave.
@@ -81,3 +83,7 @@ required Brave runtime structure changed and must be adapted again.
 
 - [LibXposed API](https://libxposed.github.io/api/)
 - [Develop Xposed Modules Using the Modern Xposed API](https://github.com/LSPosed/LSPosed/wiki/Develop-Xposed-Modules-Using-Modern-Xposed-API)
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
