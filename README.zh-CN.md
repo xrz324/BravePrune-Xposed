@@ -35,6 +35,8 @@
 
 部分功能通过 Brave Android 策略禁用，出现**受管理浏览器**标识属于正常现象。修改语言指纹保护开关后需要重启 Brave 生效。
 
+关闭语言指纹保护时，模块同时关闭语言缩减并设置语言专用的 WebCompat 例外，使严格模式下的 `navigator.language` / `navigator.languages` 使用 Brave 配置的语言；其他指纹保护项目仍由 Shields 控制。
+
 ## 实现方式
 
 - 等待 Brave 隔离的 `split_chrome` ClassLoader 就绪后安装 Hook。

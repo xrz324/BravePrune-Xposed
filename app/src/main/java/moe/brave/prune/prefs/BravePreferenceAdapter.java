@@ -25,8 +25,6 @@ public final class BravePreferenceAdapter {
     public void apply(Context context) {
         SharedPreferences modulePreferences = ModulePreferences.from(context);
         productPreferences.enforce();
-        applyLanguageProtection(modulePreferences.getBoolean(
-                ModulePreferences.KEY_LANGUAGE_FINGERPRINTING, false));
         try {
             applyInitialDefaults(
                     modulePreferences, BraveRuntime.lastUsedRegularProfile(loader));
@@ -42,16 +40,26 @@ public final class BravePreferenceAdapter {
         productPreferences.enforceLocalState();
         productPreferences.enforceProfile(profile);
         productPreferences.enforceAndroidPreferences();
-        applyLanguageProtection(modulePreferences.getBoolean(
-                ModulePreferences.KEY_LANGUAGE_FINGERPRINTING, false));
         applyInitialDefaults(modulePreferences, profile);
     }
 
     public void applyLanguageProtection(boolean enabled) {
         ManagedPolicyHooks.setLanguageProtectionEnabled(enabled);
+        try {
+            Object profile = BraveRuntime.lastUsedRegularProfile(loader);
+            setLanguagePreference(profile, enabled);
+        } catch (Throwable error) {
+            if (!BraveRuntime.isTransientNotReady(error)) {
+                module.log(Log.ERROR, TAG, "Language preference was unavailable", error);
+            }
+        }
     }
 
     private void applyInitialDefaults(SharedPreferences preferences, Object profile) {
+        boolean languageEnabled = preferences.getBoolean(
+                ModulePreferences.KEY_LANGUAGE_FINGERPRINTING, false);
+        ManagedPolicyHooks.setLanguageProtectionEnabled(languageEnabled);
+        setLanguagePreference(profile, languageEnabled);
         applyOnce(preferences, ModulePreferences.KEY_FINGERPRINTING_DEFAULT_APPLIED,
                 "fingerprinting=block", () ->
             setShieldValue(profile, "fingerprinting", "block"));
@@ -63,6 +71,17 @@ public final class BravePreferenceAdapter {
             setShieldValue(profile, "trackers", "block"));
         applyOnce(preferences, ModulePreferences.KEY_WEBRTC_DEFAULT_APPLIED,
                 "webrtc=disable_non_proxied_udp", () -> setWebrtcDefault(profile));
+    }
+
+    private void setLanguagePreference(Object profile, boolean enabled) {
+        try {
+            Object profilePrefs = BraveRuntime.profilePrefs(loader, profile);
+            LanguagePreferenceOverrides.apply(profilePrefs, enabled);
+        } catch (Throwable error) {
+            if (!BraveRuntime.isTransientNotReady(error)) {
+                module.log(Log.ERROR, TAG, "Language preference was skipped", error);
+            }
+        }
     }
 
     private void setShieldValue(Object profile, String resource, String value) throws Exception {

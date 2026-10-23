@@ -14,6 +14,8 @@ keystore.properties
 
 # Machine-local linked sources and toolchains.
 brave-core
+brave-browser
+brave-browser-release
 libxposed-example
 jdk/
 android-sdk/

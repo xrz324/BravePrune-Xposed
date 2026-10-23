@@ -42,6 +42,11 @@ Some features are disabled through Brave's Android policies, so the **managed
 browser** indicator is expected. Restart Brave after changing the
 language-fingerprinting protection switch.
 
+When language protection is off, the module disables language reduction and
+sets the language-specific WebCompat exception so that `navigator.language` /
+`navigator.languages` use Brave's configured languages in Strict mode. Shields
+continues to control other fingerprinting protections.
+
 ## Implementation
 
 - Hooks are installed after Brave's isolated `split_chrome` ClassLoader is

@@ -78,8 +78,8 @@ public final class SettingsInjector {
             String preferenceKey,
             BooleanChangeHandler handler) throws Exception {
         Object preference = Reflect.construct(switchType, context);
-        invokeVoid(preference, String.class, key);
-        setTitle(preference, title);
+        setKey(preference, preferenceType, key);
+        setTitle(preference, preferenceType, title);
         setChecked(preference, preferences.getBoolean(preferenceKey, false));
 
         ListenerBinding listenerBinding = listenerBinding(preference, preferenceType);
@@ -129,27 +129,33 @@ public final class SettingsInjector {
         throw new NoSuchMethodException(receiver.getClass().getName() + " screen getter");
     }
 
-    private static void invokeVoid(Object receiver, Class<?> parameterType, Object argument)
+    static void setKey(Object preference, Class<?> preferenceType, String key)
             throws Exception {
-        for (Class<?> current = receiver.getClass(); current != null;
-                current = current.getSuperclass()) {
-            for (Method method : current.getDeclaredMethods()) {
-                if (!Modifier.isStatic(method.getModifiers())
-                        && method.getReturnType() == void.class
-                        && method.getParameterCount() == 1
-                        && method.getParameterTypes()[0] == parameterType) {
-                    method.setAccessible(true);
-                    method.invoke(receiver, argument);
+        List<Method> candidates = new ArrayList<>();
+        for (Method method : preferenceType.getDeclaredMethods()) {
+            if (!Modifier.isStatic(method.getModifiers())
+                    && method.getReturnType() == void.class
+                    && method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == String.class) {
+                method.setAccessible(true);
+                if (method.getName().equals("setKey")) {
+                    method.invoke(preference, key);
                     return;
                 }
+                candidates.add(method);
             }
         }
-        throw new NoSuchMethodException(receiver.getClass().getName());
+        if (candidates.size() != 1) {
+            throw new NoSuchMethodException(preferenceType.getName()
+                    + " key setter count=" + candidates.size());
+        }
+        candidates.get(0).invoke(preference, key);
     }
 
-    private static void setTitle(Object preference, CharSequence title) throws Exception {
+    static void setTitle(
+            Object preference, Class<?> preferenceType, CharSequence title) throws Exception {
         List<Method> candidates = new ArrayList<>();
-        for (Class<?> current = preference.getClass(); current != null;
+        for (Class<?> current = preferenceType; current != null;
                 current = current.getSuperclass()) {
             for (Method method : current.getDeclaredMethods()) {
                 if (method.getReturnType() == void.class
